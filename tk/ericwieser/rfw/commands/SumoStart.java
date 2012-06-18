@@ -39,8 +39,10 @@ public class SumoStart implements CommandExecutor {
 		}
 		
 		List<Player> players = g.getSumo().getPlayers();
-		if(players.size() < 1/*2*/)
+		if(players.size() < 1/*2*/) {
 			sender.sendMessage(ChatColor.RED + "Not enough players in the ring");
+			return false;
+		}
 		
 		//List<Team> represented = new ArrayList<Team>();
 		

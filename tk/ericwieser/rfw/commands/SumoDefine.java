@@ -9,8 +9,7 @@ import org.bukkit.entity.Player;
 
 import tk.ericwieser.rfw.Game;
 import tk.ericwieser.rfw.RFWManager;
-
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import tk.ericwieser.util.CuboidRegion;
 
 public class SumoDefine implements CommandExecutor {
 	RFWManager plugin;
@@ -31,16 +30,14 @@ public class SumoDefine implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "Not in a game!");
 			return false;
 		}
-		CuboidSelection sel = (CuboidSelection) plugin.getWorldEdit().getSelection(p);
-		Bukkit.getLogger().info(sel.getLength() + "," + sel.getWidth());
-		Bukkit.getLogger().info(sel.getMinimumPoint() + ":" + sel.getMaximumPoint());
-		sel = new CuboidSelection(sel.getWorld(),
-				sel.getMinimumPoint().add(-0.35, 2.5, -0.35),
-				sel.getMaximumPoint().add(1.35, 5.5, 1.35));
-		Bukkit.getLogger().info(sel.getLength() + "," + sel.getWidth());
-		Bukkit.getLogger().info(sel.getMinimumPoint() + ":" + sel.getMaximumPoint());
-		g.getSumo().setZone(sel);
-		
+		CuboidRegion r =
+		                 new CuboidRegion(plugin.getWorldEdit().getSelection(p))
+		                         .adjustX(0.3, 0.3)
+		                         .adjustY(3, -0.1)
+		                         .adjustZ(0.3, 0.3);
+		Bukkit.getLogger().info(r.getMin() + ":" + r.getMax());
+		g.getSumo().setZone(r);
+
 		return true;
 	}
 

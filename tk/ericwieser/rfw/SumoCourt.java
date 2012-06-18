@@ -11,10 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
+import tk.ericwieser.util.CuboidRegion;
+
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
 public class SumoCourt implements Listener {
-	private Selection zone;
+	private CuboidRegion zone;
 	private Game      game;
 	private List<Player> players;
 
@@ -22,7 +24,7 @@ public class SumoCourt implements Listener {
 		this.game = game;
 	}
 
-	public void setZone(Selection zone) {
+	public void setZone(CuboidRegion zone) {
 		this.zone = zone;
 	}
 
@@ -31,13 +33,15 @@ public class SumoCourt implements Listener {
 		Player p = e.getPlayer();
 		//not interested
 		if(players == null) return;
+		if(!game.hasPlayer(p)) return;
 		if(!players.contains(p)) return;
 		
 		//player still in arena
 		if (zone.contains(e.getTo())) return;
 
-		Bukkit.getLogger().fine("Player moved out of ring");
-		Bukkit.getLogger().fine("At:"+e.getTo());
+		Bukkit.getLogger().info("Player moved out of ring");
+		Bukkit.getLogger().info("At:"+e.getTo());
+		Bukkit.getLogger().info(zone.getMin() + ":" + zone.getMax());
 		
 		players.remove(p);
 		game.onSumoKnockout(p);
@@ -54,11 +58,12 @@ public class SumoCourt implements Listener {
 	public List<Player> getPlayers() {
 		List<Player> inArena = new ArrayList<Player>();
 		if(zone == null) return inArena;
-		List<Entity> entities = zone.getWorld().getEntities();
+		List<Player> players = zone.getWorld().getPlayers();
 
-		for (Entity e : entities) {
-			if (e instanceof Player && zone.contains(e.getLocation())) {
-				inArena.add((Player) e);
+		for (Player p : players) {
+			Bukkit.getLogger().info(p.getLocation() + "");
+			if (zone.contains(p.getLocation())) {
+				inArena.add(p);
 			}
 		}
 		return inArena;
