@@ -17,6 +17,7 @@ public class RFWManager extends JavaPlugin implements Listener {
 	TeamCreate teamCreate = new TeamCreate(this);
 	TeamName teamName = new TeamName(this);
 	TeamColor teamColor = new TeamColor(this);
+	TeamList teamList = new TeamList(this);
 	
 	GameStart gameStart = new GameStart(this);
 	GameStop gameStop = new GameStop(this);
@@ -35,6 +36,7 @@ public class RFWManager extends JavaPlugin implements Listener {
 		getCommand("teamcreate").setExecutor(teamCreate);
 		getCommand("teamname").setExecutor(teamName);
 		getCommand("teamcolor").setExecutor(teamColor);
+		getCommand("teamlist").setExecutor(teamList);
 		
 		getCommand("gamestart").setExecutor(gameStart);
 		getCommand("gamestop").setExecutor(gameStop);

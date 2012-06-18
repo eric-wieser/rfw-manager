@@ -9,20 +9,21 @@ commands:
       description: create a team
       usage: /<command> <name>
       permission: rfw.player  
-        
    teamjoin:
       description: join a team
       usage: /<command> <name>
       permission: rfw.player
-      
    teamname:
       description: rename a team
       usage: /<command> <name>
       permission: rfw.player
-      
    teamcolor:
       description: set the team color
       usage: /<command> <color>
+      permission: rfw.player
+   teamlist:
+      description: list teams
+      usage: /<command> <name>
       permission: rfw.player
       
    gamestart:

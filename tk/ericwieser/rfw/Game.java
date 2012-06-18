@@ -58,7 +58,7 @@ public class Game {
 	public void stop() {
 		state = State.SETUP;
 		for(Player p : world.getPlayers())
-			p.sendMessage("Entering team chat mode");
+			p.sendMessage("Leaving team chat mode");
 	}
 
 	public Team getTeam(String teamName) {

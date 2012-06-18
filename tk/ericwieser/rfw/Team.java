@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class Team {
 	public Game game;
-	private ChatColor color;
+	private ChatColor color = ChatColor.YELLOW;
 	private String name;
 	public Team(String name, Game g) {
 	    super();
