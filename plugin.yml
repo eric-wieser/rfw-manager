@@ -4,7 +4,11 @@ author: Eric Wieser
 main: tk.ericwieser.rfw.RFWManager
 version: 0.0.1
 
-commands:  
+commands:
+   team:
+      description: team commands
+      usage: /<command> (create|join|name|color|list)
+      
    teamcreate:
       description: create a team
       usage: /<command> <name>
@@ -15,7 +19,7 @@ commands:
       permission: rfw.player
    teamname:
       description: rename a team
-      usage: /<command> <name>
+      usage: /<command> <new name>
       permission: rfw.player
    teamcolor:
       description: set the team color
@@ -23,8 +27,12 @@ commands:
       permission: rfw.player
    teamlist:
       description: list teams
-      usage: /<command> <name>
-      permission: rfw.player
+      aliases: teamls
+      usage: /<command>
+      
+   game:
+      description: game commands
+      usage: /<command> (start|stop|list)
       
    gamestart:
       description: start the game
