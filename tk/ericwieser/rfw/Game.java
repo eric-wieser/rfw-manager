@@ -6,6 +6,9 @@ import java.util.Map;
 
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+
+import com.sk89q.worldedit.regions.CuboidRegion;
 
 
 public class Game {
@@ -19,10 +22,14 @@ public class Game {
 	private List<Team> teams = new ArrayList<Team>();
 	private Map<String, Team> playerTeams = new HashMap<String, Team>();
 	
+	private SumoCourt sumo = new SumoCourt(this); 
+	
 	public Game(RFWManager plugin, World world) {
 		this.plugin = plugin;
 		this.world = world;
-		plugin.getServer().getPluginManager().registerEvents(teamListener, plugin);
+		PluginManager pmgr = plugin.getServer().getPluginManager();
+		pmgr.registerEvents(teamListener, plugin);
+		pmgr.registerEvents(sumo, plugin);
 	}
 	
 	public World getWorld() { return world; }
@@ -39,7 +46,20 @@ public class Game {
 
 	public void onPlayerRemovedFromTeam(Player p, Team t) {
 		playerTeams.remove(p.getName());
+		if(t.getPlayers().size() == 0) {
+			teams.remove(t);
+		}
 	}
+	
+	public void onSumoWon(Player winner) {
+		for(Player p : world.getPlayers())
+			p.sendMessage(winner.getName() + " won the sumo!");
+	}
+	public void onSumoKnockout(Player loser) {
+		for(Player p : world.getPlayers())
+			p.sendMessage(loser.getName() + " was knocked out!");
+    }
+	
 	public Team AddTeam(String teamName) {
 	    Team t = new Team(teamName, this);
 	    teams.add(t);
@@ -55,6 +75,10 @@ public class Game {
 		}
 		state = State.RUNNING;
 	}
+	public void sendMessage(String s) {
+		for(Player p : world.getPlayers())
+			p.sendMessage(s);
+	}
 	public void stop() {
 		state = State.SETUP;
 		for(Player p : world.getPlayers())
@@ -63,7 +87,7 @@ public class Game {
 
 	public Team getTeam(String teamName) {
 	    for(Team t : teams)
-	    	if(t.getName() == teamName)
+	    	if(t.getName().equals(teamName))
 	    		return t;
 	    return null;
     }
@@ -72,4 +96,7 @@ public class Game {
 	}
 
 	public List<Team> getTeams() { return teams; }
+	public SumoCourt getSumo() { return sumo; }
+	public RFWManager getPlugin() { return plugin; }
+
 }

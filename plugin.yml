@@ -4,6 +4,8 @@ author: Eric Wieser
 main: tk.ericwieser.rfw.RFWManager
 version: 0.0.1
 
+depend: [WorldEdit]
+
 commands:
    team:
       description: team commands
@@ -44,7 +46,22 @@ commands:
       permission: rfw.referee
    gamelist:
       description: list running games
+      aliases: gamels
       usage: /<command>
       permission: rfw.player
+      
+   sumo:
+      description: game commands
+      usage: /<command> (define|start)
+      permission: rfw.referee
+      
+   sumostart:
+      description: try to start a sumo round
+      usage: /<command>
+      permission: rfw.referee
+   sumodefine:
+      description: start the game
+      usage: /<command>
+      permission: rfw.op
 
       

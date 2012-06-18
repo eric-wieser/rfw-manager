@@ -38,6 +38,11 @@ public class TeamCreate implements CommandExecutor {
 			sender.sendMessage(ChatColor.RED + "Can't create another team");
 			return false;
 		}
+
+		Team old = g.getTeam(p);
+		if(old != null) {
+			old.removePlayer(p);
+		}
 		
 		t.addPlayer(p);
 		return true;
