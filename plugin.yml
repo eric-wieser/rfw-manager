@@ -1,0 +1,41 @@
+name: RFW Manager
+author: Eric Wieser
+
+main: tk.ericwieser.rfw.RFWManager
+version: 0.0.1
+
+commands:  
+   teamcreate:
+      description: create a team
+      usage: /<command> <name>
+      permission: rfw.player  
+        
+   teamjoin:
+      description: join a team
+      usage: /<command> <name>
+      permission: rfw.player
+      
+   teamname:
+      description: rename a team
+      usage: /<command> <name>
+      permission: rfw.player
+      
+   teamcolor:
+      description: set the team color
+      usage: /<command> <color>
+      permission: rfw.player
+      
+   gamestart:
+      description: start the game
+      usage: /<command>
+      permission: rfw.referee
+   gamestop:
+      description: start the game
+      usage: /<command>
+      permission: rfw.referee
+   gamelist:
+      description: list running games
+      usage: /<command>
+      permission: rfw.player
+
+      
