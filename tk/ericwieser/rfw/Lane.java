@@ -122,9 +122,7 @@ public class Lane implements ConfigurationSerializable, Listener {
 			wools.add(w);
 		}
 		
-		Object oZoneData = m.get("zones");
-		Bukkit.getLogger().info("" + oZoneData);
-		
+		Object oZoneData = m.get("zones");		
 		List<Map<String, Object>> zoneData = (List<Map<String, Object>>) oZoneData;
 		
 		return new Lane(null, null, CompoundRegion.deserialize(zoneData), wools);
@@ -169,7 +167,7 @@ public class Lane implements ConfigurationSerializable, Listener {
 	public void blockPlaced(BlockPlaceEvent e) {
 		Block b = e.getBlock();
 		for(WoolPlacement w : wools) {
-			if(w.block.matches(b)) {
+			if(w.block.matches(b) && w.location.equals(b.getLocation())) {
 				game.sendMessage("The " + w.name + " was placed on the " + name);
 				return;
 			}
@@ -180,7 +178,7 @@ public class Lane implements ConfigurationSerializable, Listener {
 	public void blockDestroyed(BlockBreakEvent e) {
 		Block b = e.getBlock();
 		for(WoolPlacement w : wools) {
-			if(w.block.matches(b)) {
+			if(w.block.matches(b) && w.location.equals(b.getLocation())) {
 				game.sendMessage("The " + w.name + " was removed on the " + name);
 				return;
 			}

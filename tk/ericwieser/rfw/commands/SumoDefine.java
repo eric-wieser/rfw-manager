@@ -35,7 +35,7 @@ public class SumoDefine implements CommandExecutor {
 		                         .adjustX(0.3, 0.3)
 		                         .adjustY(3, -0.1)
 		                         .adjustZ(0.3, 0.3);
-		Bukkit.getLogger().info(r.getMin() + ":" + r.getMax());
+		//Bukkit.getLogger().info(r.getMin() + ":" + r.getMax());
 		g.getSumo().setZone(r);
 		g.saveMapConfig();
 
