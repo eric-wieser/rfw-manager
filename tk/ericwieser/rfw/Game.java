@@ -1,13 +1,16 @@
 package tk.ericwieser.rfw;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,6 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
 import tk.ericwieser.util.CuboidRegion;
+import tk.ericwieser.util.SectionRemovingConfiguration;
+
+import static tk.ericwieser.util.ConfigUtil.*;
 
 
 public class Game {
@@ -37,7 +43,13 @@ public class Game {
 	public Game(RFWManager plugin, World world) {
 		configFile = new File(world.getWorldFolder(), "rfwconfig.yml");
 		if(!configFile.exists()) throw new IllegalArgumentException("World not compatible");
-		config = YamlConfiguration.loadConfiguration(configFile);
+		config = new SectionRemovingConfiguration();
+		try {
+	        config.load(configFile);
+        } catch (IOException | InvalidConfigurationException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+        }
 		loadMapConfig();
 		
 		this.plugin = plugin;
@@ -50,23 +62,20 @@ public class Game {
 	@SuppressWarnings("unchecked")
     public void loadMapConfig() {
 		if(config.contains("sumo")) {
-    		ConfigurationSection s =  config.getConfigurationSection("sumo");
     		CuboidRegion zone = CuboidRegion.deserialize(
-    				s.getConfigurationSection("zone").getValues(false)
+    			getMap(getMap(config, "sumo"), "zone")
     		);
     		sumo.setZone(zone);
 		}
 		
 		if(config.contains("lanes")) {
 			lanes.clear();
-			ConfigurationSection lanesdata = config.getConfigurationSection("lanes");
+			Map<String, Object> lanesdata = getMap(config, "lanes");
     		
-    		for(String name : lanesdata.getKeys(false)) {
-    			ConfigurationSection lanedata = lanesdata.getConfigurationSection(name);
-  
-    			Lane l = Lane.deserialize(lanedata.getValues(false));
+    		for(Entry<String, Object> lanedata : lanesdata.entrySet()) {  
+    			Lane l = Lane.deserialize(asMap(lanedata.getValue()));
     			if(l == null) continue;
-    			l.setName(name);
+    			l.setName(lanedata.getKey());
     			lanes.add(l);
     		}
 		}

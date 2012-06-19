@@ -1,6 +1,7 @@
 package tk.ericwieser.rfw;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +18,14 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Wolf;
 import org.bukkit.material.Wool;
 import org.bukkit.util.Vector;
+import static tk.ericwieser.util.ConfigUtil.*;
 
 import com.sk89q.worldedit.blocks.ClothColor;
 
 import tk.ericwieser.util.BlockData;
 import tk.ericwieser.util.CompoundRegion;
 import tk.ericwieser.util.CuboidRegion;
+import tk.ericwieser.util.Region;
 
 public class Lane implements ConfigurationSerializable{
 	private CompoundRegion      zone = new CompoundRegion();
@@ -101,28 +104,23 @@ public class Lane implements ConfigurationSerializable{
     public static Lane deserialize(Map<String, Object> m) {
 		//Build the wool list
 		List<WoolPlacement> wools = new ArrayList<>();
-		MemorySection woolsData = (MemorySection) m.get("wools");
+		Map<String, Object> woolsData = getMap(m, "wools");
 
-		for(String name : woolsData.getKeys(false)) {
-			Bukkit.getLogger().info(name);
-		}
-
-		for(String name : woolsData.getKeys(false)) {
-			ConfigurationSection woolData = woolsData.getConfigurationSection(name);
-
-			WoolPlacement w = WoolPlacement.deserialize(woolData.getValues(false));
+		for(Entry<String, Object> woolData : woolsData.entrySet()) {
+			WoolPlacement w = WoolPlacement.deserialize(asMap(woolData.getValue()));
 			if(w == null) return null;
 			
-			w.name = name;
+			w.name = woolData.getKey();
 			wools.add(w);
 		}
-
+		
 		Object oZoneData = m.get("zones");
 		Bukkit.getLogger().info("" + oZoneData);
 		
 		List<Map<String, Object>> zoneData = (List<Map<String, Object>>) oZoneData;
 		
 		return new Lane(null, CompoundRegion.deserialize(zoneData), wools);
+    
     }
 	
 	@Override

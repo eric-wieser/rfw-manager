@@ -13,9 +13,10 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
+import static tk.ericwieser.util.ConfigUtil.*;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
-@SerializableAs("Cuboid")
+
 public class CuboidRegion implements ConfigurationSerializable, Region  {
 	static { ConfigurationSerialization.registerClass(CuboidRegion.class); }
 	World  world;
@@ -138,14 +139,12 @@ public class CuboidRegion implements ConfigurationSerializable, Region  {
 	
 	@SuppressWarnings("unchecked")
     public static CuboidRegion deserialize(Map<String, Object> m) {
-		MemorySection min = (MemorySection) m.get("min");
-		MemorySection max = (MemorySection) m.get("max");
-		//String worldName = (String) m.get("world");
-		//
+		Bukkit.getLogger().info(""+m);
+		
 		return new CuboidRegion(
 				null,
-				Vector.deserialize(min.getValues(false)),
-				Vector.deserialize(max.getValues(false))
+				Vector.deserialize(getMap(m, "min")),
+				Vector.deserialize(getMap(m, "max"))
 		);
 	}
 }

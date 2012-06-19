@@ -66,10 +66,14 @@ commands:
       
    lane:
       description: lane commands
-      usage: /<command> (define)
+      usage: /<command> (define|discard)
       permission: rfw.op
    lanedefine:
-      description: game commands
+      description: Create a new lane or add a region to an existing one
+      usage: /<command> <name>
+      permission: rfw.op
+   lanediscard:
+      description: Discard data associated with a lane
       usage: /<command> <name>
       permission: rfw.op
 

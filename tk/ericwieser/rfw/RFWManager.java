@@ -38,6 +38,7 @@ public class RFWManager extends JavaPlugin implements Listener {
 	SumoStart  sumoStart  = new SumoStart(this);
 	
 	LaneDefine laneDefine = new LaneDefine(this);
+	LaneDiscard laneDiscard = new LaneDiscard(this);
 
 	List<Game> games      = new ArrayList<>();
 
@@ -66,6 +67,7 @@ public class RFWManager extends JavaPlugin implements Listener {
 		getCommand("sumo").setExecutor(new SubCommandExecutor(this, "sumo"));
 		
 		getCommand("lanedefine").setExecutor(laneDefine);
+		getCommand("lanediscard").setExecutor(laneDiscard);
 		getCommand("lane").setExecutor(new SubCommandExecutor(this, "lane"));
 
 		World df = getServer().getWorld("direct_fire");
