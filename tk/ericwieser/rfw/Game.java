@@ -26,6 +26,7 @@ public class Game {
 	private TeamListener teamListener = new TeamListener(this);
 	
 	private List<Team> teams = new ArrayList<Team>();
+	private List<Lane> lanes = new ArrayList<Lane>();
 	private Map<String, Team> playerTeams = new HashMap<String, Team>();
 	
 	private SumoCourt sumo = new SumoCourt(this);
@@ -55,6 +56,20 @@ public class Game {
     		);
     		sumo.setZone(zone);
 		}
+		
+		if(config.contains("lanes")) {
+			lanes.clear();
+			ConfigurationSection lanesdata = config.getConfigurationSection("lanes");
+    		
+    		for(String name : lanesdata.getKeys(false)) {
+    			ConfigurationSection lanedata = lanesdata.getConfigurationSection(name);
+  
+    			Lane l = Lane.deserialize(lanedata.getValues(false));
+    			if(l == null) continue;
+    			l.setName(name);
+    			lanes.add(l);
+    		}
+		}
 	}
 	
 	public void saveMapConfig() {
@@ -63,6 +78,14 @@ public class Game {
     		sumoconfig.put("zone", sumo.getZone().serialize());
     		config.set("sumo", sumoconfig);
 		}
+
+		Map<String, Object> lanesconfig = new HashMap<>();
+		for(Lane l : lanes) {
+			lanesconfig.put(l.getName(), l.serialize());
+		}
+		config.set("lanes", lanesconfig);
+		
+		
 		try {
 	        config.save(configFile);
         } catch (IOException e) {
@@ -124,17 +147,26 @@ public class Game {
 			p.sendMessage("Leaving team chat mode");
 	}
 
+	public Team getTeam(Player p) {
+		return playerTeams.get(p.getName());
+	}
+	
 	public Team getTeam(String teamName) {
 	    for(Team t : teams)
 	    	if(t.getName().equals(teamName))
 	    		return t;
 	    return null;
     }
-	public Team getTeam(Player p) {
-		return playerTeams.get(p.getName());
-	}
-
+	
+	public Lane getLane(String laneName) {
+	    for(Lane l : lanes)
+	    	if(l.getName().equals(laneName))
+	    		return l;
+	    return null;
+    }
+	
 	public List<Team> getTeams() { return teams; }
+	public List<Lane> getLanes() { return lanes; }
 	public SumoCourt getSumo() { return sumo; }
 	public RFWManager getPlugin() { return plugin; }
 

@@ -63,5 +63,14 @@ commands:
       description: start the game
       usage: /<command>
       permission: rfw.op
+      
+   lane:
+      description: lane commands
+      usage: /<command> (define)
+      permission: rfw.op
+   lanedefine:
+      description: game commands
+      usage: /<command> <name>
+      permission: rfw.op
 
       

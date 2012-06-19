@@ -26,6 +26,7 @@ public class SumoCourt implements Listener {
 
 	public void setZone(CuboidRegion zone) {
 		this.zone = zone;
+		this.zone.setWorld(game.getWorld());
 	}
 	public CuboidRegion getZone() {
 	    return zone;

@@ -10,11 +10,14 @@ import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
-
-public class CuboidRegion implements ConfigurationSerializable  {
+@SerializableAs("Cuboid")
+public class CuboidRegion implements ConfigurationSerializable, Region  {
+	static { ConfigurationSerialization.registerClass(CuboidRegion.class); }
 	World  world;
 	Vector min;
 	Vector max;
@@ -43,15 +46,42 @@ public class CuboidRegion implements ConfigurationSerializable  {
 		      );
 	}
 
-	private boolean between(double lower, double x, double upper) {
-		return lower <= x && upper > x;
+	private boolean betweenLower(double lower, double x, double upper) {
+		return lower <= x && x < upper;
+	}
+	private boolean betweenUpper(double lower, double x, double upper) {
+		return lower < x && x <= upper;
 	}
 
-	public boolean contains(Location l) {
-		return l.getWorld() == world &&
-				between(min.getX(), l.getX(), max.getX()) &&
-		        between(min.getY(), l.getY(), max.getY()) &&
-		        between(min.getZ(), l.getZ(), max.getZ());
+	/* (non-Javadoc)
+     * @see tk.ericwieser.util.Region#contains(org.bukkit.util.BlockVector)
+     */
+	@Override
+    public boolean contains(BlockVector v) {
+		return  betweenLower(min.getX(), v.getBlockX(), max.getX()) &&
+		        betweenLower(min.getY(), v.getBlockY(), max.getY()) &&
+		        betweenLower(min.getZ(), v.getBlockZ(), max.getZ()) &&
+		        betweenUpper(min.getX(), v.getBlockX() + 1, max.getX()) &&
+		        betweenUpper(min.getY(), v.getBlockY() + 1, max.getY()) &&
+		        betweenUpper(min.getZ(), v.getBlockZ() + 1, max.getZ());
+	}
+
+	/* (non-Javadoc)
+     * @see tk.ericwieser.util.Region#contains(org.bukkit.util.Vector)
+     */
+	@Override
+    public boolean contains(Vector v) {
+		return  betweenLower(min.getX(), v.getX(), max.getX()) &&
+		        betweenLower(min.getY(), v.getY(), max.getY()) &&
+		        betweenLower(min.getZ(), v.getZ(), max.getZ());
+	}
+	
+	/* (non-Javadoc)
+     * @see tk.ericwieser.util.Region#contains(org.bukkit.Location)
+     */
+	@Override
+    public boolean contains(Location l) {
+		return l.getWorld() == world && contains(l.toVector());
 	}
 
 	public Vector getMax() {
@@ -64,6 +94,9 @@ public class CuboidRegion implements ConfigurationSerializable  {
 
 	public World getWorld() {
 		return world;
+	}
+	public void setWorld(World world) {
+		this.world = world;
 	}
 
 	public Vector getMin() {
@@ -90,14 +123,14 @@ public class CuboidRegion implements ConfigurationSerializable  {
 		return this;
 	}
 	
-	public CuboidRegion clone() {
+	public Region clone() {
 		return new CuboidRegion(world, min, max);
 	}
 
 	@Override
     public Map<String, Object> serialize() {
 	    Map<String, Object> m = new HashMap<String, Object>();
-	    m.put("world", world.getName());
+	    // m.put("world", world.getName());
 	    m.put("min", min.serialize());
 	    m.put("max", max.serialize());
 	    return m;	    
@@ -107,10 +140,10 @@ public class CuboidRegion implements ConfigurationSerializable  {
     public static CuboidRegion deserialize(Map<String, Object> m) {
 		MemorySection min = (MemorySection) m.get("min");
 		MemorySection max = (MemorySection) m.get("max");
-		String worldName = (String) m.get("world");
-		Bukkit.getLogger().info("["+worldName+']');
+		//String worldName = (String) m.get("world");
+		//
 		return new CuboidRegion(
-				Bukkit.getServer().getWorld(worldName),
+				null,
 				Vector.deserialize(min.getValues(false)),
 				Vector.deserialize(max.getValues(false))
 		);
