@@ -1,12 +1,20 @@
 package tk.ericwieser.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.MemoryConfiguration;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.util.Vector;
 
 import com.sk89q.worldedit.bukkit.selections.Selection;
 
-public class CuboidRegion {
+public class CuboidRegion implements ConfigurationSerializable  {
 	World  world;
 	Vector min;
 	Vector max;
@@ -84,5 +92,27 @@ public class CuboidRegion {
 	
 	public CuboidRegion clone() {
 		return new CuboidRegion(world, min, max);
+	}
+
+	@Override
+    public Map<String, Object> serialize() {
+	    Map<String, Object> m = new HashMap<String, Object>();
+	    m.put("world", world.getName());
+	    m.put("min", min.serialize());
+	    m.put("max", max.serialize());
+	    return m;	    
+    }
+	
+	@SuppressWarnings("unchecked")
+    public static CuboidRegion deserialize(Map<String, Object> m) {
+		MemorySection min = (MemorySection) m.get("min");
+		MemorySection max = (MemorySection) m.get("max");
+		String worldName = (String) m.get("world");
+		Bukkit.getLogger().info("["+worldName+']');
+		return new CuboidRegion(
+				Bukkit.getServer().getWorld(worldName),
+				Vector.deserialize(min.getValues(false)),
+				Vector.deserialize(max.getValues(false))
+		);
 	}
 }

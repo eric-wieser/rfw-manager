@@ -27,6 +27,9 @@ public class SumoCourt implements Listener {
 	public void setZone(CuboidRegion zone) {
 		this.zone = zone;
 	}
+	public CuboidRegion getZone() {
+	    return zone;
+    }
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void playerMoved(PlayerMoveEvent e) {
@@ -68,4 +71,5 @@ public class SumoCourt implements Listener {
 		}
 		return inArena;
 	}
+
 }

@@ -1,14 +1,20 @@
 package tk.ericwieser.rfw;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
-import com.sk89q.worldedit.regions.CuboidRegion;
+import tk.ericwieser.util.CuboidRegion;
 
 
 public class Game {
@@ -22,14 +28,47 @@ public class Game {
 	private List<Team> teams = new ArrayList<Team>();
 	private Map<String, Team> playerTeams = new HashMap<String, Team>();
 	
-	private SumoCourt sumo = new SumoCourt(this); 
+	private SumoCourt sumo = new SumoCourt(this);
+	
+	private File configFile;
+	private FileConfiguration config;
 	
 	public Game(RFWManager plugin, World world) {
+		configFile = new File(world.getWorldFolder(), "rfwconfig.yml");
+		if(!configFile.exists()) throw new IllegalArgumentException("World not compatible");
+		config = YamlConfiguration.loadConfiguration(configFile);
+		loadMapConfig();
+		
 		this.plugin = plugin;
 		this.world = world;
 		PluginManager pmgr = plugin.getServer().getPluginManager();
 		pmgr.registerEvents(teamListener, plugin);
 		pmgr.registerEvents(sumo, plugin);
+	}
+	
+	@SuppressWarnings("unchecked")
+    public void loadMapConfig() {
+		if(config.contains("sumo")) {
+    		ConfigurationSection s =  config.getConfigurationSection("sumo");
+    		CuboidRegion zone = CuboidRegion.deserialize(
+    				s.getConfigurationSection("zone").getValues(false)
+    		);
+    		sumo.setZone(zone);
+		}
+	}
+	
+	public void saveMapConfig() {
+		if( sumo.getZone() != null) {
+    		Map<String, Object> sumoconfig = new HashMap<>();
+    		sumoconfig.put("zone", sumo.getZone().serialize());
+    		config.set("sumo", sumoconfig);
+		}
+		try {
+	        config.save(configFile);
+        } catch (IOException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+        }
 	}
 	
 	public World getWorld() { return world; }
