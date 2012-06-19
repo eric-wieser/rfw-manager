@@ -138,9 +138,7 @@ public class CuboidRegion implements ConfigurationSerializable, Region  {
     }
 	
 	@SuppressWarnings("unchecked")
-    public static CuboidRegion deserialize(Map<String, Object> m) {
-		Bukkit.getLogger().info(""+m);
-		
+    public static CuboidRegion deserialize(Map<String, Object> m) {		
 		return new CuboidRegion(
 				null,
 				Vector.deserialize(getMap(m, "min")),

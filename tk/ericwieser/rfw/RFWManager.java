@@ -36,7 +36,7 @@ public class RFWManager extends JavaPlugin implements Listener {
 
 	SumoDefine sumoDefine = new SumoDefine(this);
 	SumoStart  sumoStart  = new SumoStart(this);
-	
+
 	LaneDefine laneDefine = new LaneDefine(this);
 	LaneDiscard laneDiscard = new LaneDiscard(this);
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
@@ -47,4 +48,9 @@ public class CompoundRegion extends LinkedList<Region> implements Region {
 		}
 		return regions;
 	}
+	@Override
+    public void setWorld(World world) {
+		for(Region r : this)
+			r.setWorld(world);
+    }
 }

@@ -40,6 +40,8 @@ public class Game {
 	private File configFile;
 	private FileConfiguration config;
 	
+	private PluginManager pmgr;
+	
 	public Game(RFWManager plugin, World world) {
 		configFile = new File(world.getWorldFolder(), "rfwconfig.yml");
 		if(!configFile.exists()) throw new IllegalArgumentException("World not compatible");
@@ -50,13 +52,13 @@ public class Game {
 	        // TODO Auto-generated catch block
 	        e.printStackTrace();
         }
-		loadMapConfig();
 		
 		this.plugin = plugin;
 		this.world = world;
-		PluginManager pmgr = plugin.getServer().getPluginManager();
+		pmgr = plugin.getServer().getPluginManager();
 		pmgr.registerEvents(teamListener, plugin);
 		pmgr.registerEvents(sumo, plugin);
+		loadMapConfig();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -76,6 +78,8 @@ public class Game {
     			Lane l = Lane.deserialize(asMap(lanedata.getValue()));
     			if(l == null) continue;
     			l.setName(lanedata.getKey());
+    			l.setGame(this);
+    			pmgr.registerEvents(l, plugin);
     			lanes.add(l);
     		}
 		}
