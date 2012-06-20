@@ -2,8 +2,8 @@ package tk.ericwieser.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,28 +16,24 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
  */
 public class ConfigUtil {
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> getMap(Map<String, Object> m, String key) {
-		return (Map<String, Object>) m.get(key);
+	public static <T> Map<String, T> getMap(Map<String, Object> m, String key) {
+		return (Map<String, T>) m.get(key);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> getMap(Object o, String key) {
-		return getMap((Map<String, Object>) o, key);
+	public static <T> Map<String, T> getMap(Object o, String key) {
+		return getMap(o, key);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> getMap(ConfigurationSection o, String key) {
-		return (Map<String, Object>) o.get(key);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static <T> Map<String, T> getMapT(ConfigurationSection o, String key) {
+	public static <T> Map<String, T> getMap(ConfigurationSection o, String key) {
 		return (Map<String, T>) o.get(key);
 	}
 
+
 	@SuppressWarnings("unchecked")
-	public static Map<String, Object> asMap(Object o) {
-		return (Map<String, Object>) o;
+	public static <T> Map<String, T> asMap(Object o) {
+		return (Map<String, T>) o;
 	}
 
 	/**
@@ -67,7 +63,7 @@ public class ConfigUtil {
 			if(value == null)
 				return null;
 			value.setName(e.getKey());
-			deserialized.add(value);			
+			deserialized.add(value);
 		}
 		return deserialized;
 	}
