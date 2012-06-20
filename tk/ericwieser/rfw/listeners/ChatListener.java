@@ -10,11 +10,10 @@ import org.bukkit.event.player.PlayerChatEvent;
 
 import tk.ericwieser.rfw.Game;
 import tk.ericwieser.rfw.Team;
-import tk.ericwieser.rfw.Game.State;
 
 public class ChatListener implements Listener {
 	Game game;
-
+	
 	@EventHandler
 	public void playerChatted(PlayerChatEvent e) {
 		Player p = e.getPlayer();
