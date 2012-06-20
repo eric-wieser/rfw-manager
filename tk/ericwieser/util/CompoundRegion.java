@@ -1,18 +1,18 @@
 package tk.ericwieser.util;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
+/**
+ * A region consisting of a list of smaller regions
+ */
 @SuppressWarnings("serial")
 public class CompoundRegion extends LinkedList<Region> implements Region {
 	public boolean contains(Location l) {

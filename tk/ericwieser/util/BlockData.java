@@ -45,6 +45,9 @@ public class BlockData {
 			return null;
 	}
 
+	/**
+	 * Convert to a human readable form, eg "wool:red", "stairs:3", or "dirt"
+	 */
 	@Override
 	public String toString() {
 		String materialName = mat.toString();
@@ -64,6 +67,9 @@ public class BlockData {
 		return materialName + ":" + dataStr;
 	}
 
+	/**
+	 * Convert from a human readable form, eg "wool:red", "stairs:3", or "dirt"
+	 */
 	public static BlockData fromString(String s) {
 		String[] parts = s.split(":", 2);
 		String name = parts[0];
