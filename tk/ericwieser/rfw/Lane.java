@@ -1,28 +1,15 @@
 package tk.ericwieser.rfw;
 
+import static tk.ericwieser.util.ConfigUtil.getMap;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Wolf;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
-
-import static tk.ericwieser.util.ConfigUtil.*;
 
 import tk.ericwieser.util.BlockData;
 import tk.ericwieser.util.CompoundRegion;
@@ -30,34 +17,33 @@ import tk.ericwieser.util.ConfigUtil;
 import tk.ericwieser.util.Nameable;
 import tk.ericwieser.util.Region;
 
-public class Lane implements ConfigurationSerializable, Listener, Nameable {
+public class Lane extends GameComponent implements ConfigurationSerializable, Nameable {
 	private CompoundRegion zone = new CompoundRegion();
 	private List<WoolPlacement> wools;
+	
 	private String name;
-	private Game game;
-
+	
+	@Override
 	public String getName() { return name; }
+	@Override
 	public void setName(String name) { this.name = name; }
 
-	public Game getGame() {
-		return game;
-	}
-
 	/** Set the game of the lane. Used for deserialization */
-	public void setGame(Game game) {
-		this.game = game;
+	@Override public void setGame(Game game) {
+		super.setGame(game);
 		for (Region r : zone) r.setWorld(game.getWorld());
 		for (WoolPlacement w : wools) w.location.setWorld(game.getWorld());
 	}
 
 	public CompoundRegion getZone() { return zone; }
+	public List<WoolPlacement> getWools() { return wools; }
 
 	public Lane(Game g, String name, CompoundRegion zone) {
 		this(g, name, zone, new ArrayList<WoolPlacement>());
 	}
 
 	public Lane(Game g, String name, CompoundRegion zone, List<WoolPlacement> wools) {
-		this.game = g;
+		super(g);
 		this.zone = zone;
 		this.name = name;
 		this.wools = wools;
@@ -68,22 +54,24 @@ public class Lane implements ConfigurationSerializable, Listener, Nameable {
 		public BlockData block;
 		public String name;
 		
+		@Override
 		public String getName() { return name; }
+		@Override
 		public void setName(String name) { this.name = name; }
-
+		
 		public WoolPlacement(Location l, BlockData b, String n) {
 			location = l;
 			block = b;
 			name = n;
 		}
-
+		
 		public static WoolPlacement deserialize(Map<String, Object> m) {
 			// Get block data
 			String blockdata = (String) m.get("block");
 			if (blockdata == null)
 				return null;
 			BlockData b = BlockData.fromString(blockdata);
-
+			
 			// Rebuild the location
 			Vector v = Vector.deserialize(getMap(m, "at"));
 			Location l = new Location(
@@ -94,7 +82,7 @@ public class Lane implements ConfigurationSerializable, Listener, Nameable {
 			);
 			return new WoolPlacement(l, b, null);
 		}
-
+		
 		@Override
 		public Map<String, Object> serialize() {
 			Map<String, Object> m = new HashMap<String, Object>();
@@ -102,9 +90,8 @@ public class Lane implements ConfigurationSerializable, Listener, Nameable {
 			m.put("block", block.toString());
 			return m;
 		}
-
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public static Lane deserialize(Map<String, Object> m) {
 		// Build the wool list
@@ -136,51 +123,5 @@ public class Lane implements ConfigurationSerializable, Listener, Nameable {
 		m.put("wools", wool);
 		m.put("zones", zone.serialize());
 		return m;
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void playerMoved(PlayerMoveEvent e) {
-		Player p = e.getPlayer();
-		// not interested
-		if (!game.hasPlayer(p))
-			return;
-
-		// player still in arena
-		boolean wasIn = getZone().contains(e.getFrom());
-		boolean isIn = getZone().contains(e.getTo());
-
-		if (wasIn && !isIn) {
-			game.getPlugin().getLogger()
-				.info(p.getName() + " left lane \"" + getName() + "\"");
-			p.sendMessage("You left lane \"" + getName() + "\"");
-		}
-		else if (!wasIn && isIn) {
-			game.getPlugin().getLogger()
-				.info(p.getName() + " entered lane \"" + getName() + "\"");
-			p.sendMessage("You entered lane \"" + getName() + "\"");
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void blockPlaced(BlockPlaceEvent e) {
-		Block b = e.getBlock();
-		for (WoolPlacement w : wools) {
-			if (w.block.matches(b) && w.location.equals(b.getLocation())) {
-				game.sendMessage("The " + w.name + " was placed on the " + name);
-				return;
-			}
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void blockDestroyed(BlockBreakEvent e) {
-		Block b = e.getBlock();
-		for (WoolPlacement w : wools) {
-			if (w.block.matches(b) && w.location.equals(b.getLocation())) {
-				game.sendMessage("The " + w.name + " was removed on the "
-						+ name);
-				return;
-			}
-		}
 	}
 }

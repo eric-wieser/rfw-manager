@@ -1,28 +1,24 @@
 package tk.ericwieser.rfw;
+import static tk.ericwieser.util.ConfigUtil.getMap;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
 import tk.ericwieser.rfw.listeners.ChatListener;
+import tk.ericwieser.rfw.listeners.LaneListener;
 import tk.ericwieser.util.ConfigUtil;
 import tk.ericwieser.util.CuboidRegion;
 import tk.ericwieser.util.SectionRemovingConfiguration;
-
-import static tk.ericwieser.util.ConfigUtil.*;
 
 
 public class Game {
@@ -63,7 +59,6 @@ public class Game {
 		loadMapConfig();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public void loadMapConfig() {
 		if(config.contains("sumo")) {
 			CuboidRegion zone = CuboidRegion.deserialize(
@@ -74,12 +69,14 @@ public class Game {
 		
 		if(config.contains("lanes")) {
 			lanes.clear();
-			Map<String, Map<String, Object>> lanesdata = ConfigUtil.<Map<String, Object>>getMapT(config, "lanes");
-			List<Lane> lanes = ConfigUtil.deserialize(lanesdata, Lane.class);
+			List<Lane> lanes = ConfigUtil.deserialize(
+				ConfigUtil.<Map<String, Object>>getMap(config, "lanes"),
+				Lane.class
+			);
 			
 			for(Lane l : lanes) {
 				l.setGame(this);
-				pmgr.registerEvents(l, plugin);
+				pmgr.registerEvents(new LaneListener(l), plugin);
 			}
 		}
 	}
@@ -91,11 +88,7 @@ public class Game {
 			config.set("sumo", sumoconfig);
 		}
 
-		Map<String, Object> lanesconfig = new HashMap<>();
-		for(Lane l : lanes) {
-			lanesconfig.put(l.getName(), l.serialize());
-		}
-		config.set("lanes", lanesconfig);
+		config.set("lanes", ConfigUtil.serialize(lanes));
 		
 		
 		try {

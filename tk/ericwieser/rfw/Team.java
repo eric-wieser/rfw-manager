@@ -8,15 +8,13 @@ import org.bukkit.entity.Player;
 
 import tk.ericwieser.util.Nameable;
 
-public class Team implements Nameable {
-	public Game game;
+public class Team extends GameComponent implements Nameable {
 	private ChatColor color = ChatColor.YELLOW;
 	private String name;
 
 	public Team(String name, Game g) {
-		super();
+		super(g);
 		this.name = name;
-		this.game = g;
 	}
 
 	private List<Player> players = new ArrayList<Player>();
