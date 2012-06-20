@@ -17,6 +17,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 
+import tk.ericwieser.rfw.listeners.ChatListener;
+import tk.ericwieser.util.ConfigUtil;
 import tk.ericwieser.util.CuboidRegion;
 import tk.ericwieser.util.SectionRemovingConfiguration;
 
@@ -29,7 +31,7 @@ public class Game {
 	private State state = State.SETUP;
 	
 	private RFWManager plugin;
-	private TeamListener teamListener = new TeamListener(this);
+	private ChatListener teamListener = new ChatListener(this);
 	
 	private List<Team> teams = new ArrayList<Team>();
 	private List<Lane> lanes = new ArrayList<Lane>();
@@ -47,11 +49,11 @@ public class Game {
 		if(!configFile.exists()) throw new IllegalArgumentException("World not compatible");
 		config = new SectionRemovingConfiguration();
 		try {
-	        config.load(configFile);
-        } catch (IOException | InvalidConfigurationException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-        }
+			config.load(configFile);
+		} catch (IOException | InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		this.plugin = plugin;
 		this.world = world;
@@ -62,34 +64,31 @@ public class Game {
 	}
 	
 	@SuppressWarnings("unchecked")
-    public void loadMapConfig() {
+	public void loadMapConfig() {
 		if(config.contains("sumo")) {
-    		CuboidRegion zone = CuboidRegion.deserialize(
-    			getMap(getMap(config, "sumo"), "zone")
-    		);
-    		sumo.setZone(zone);
+			CuboidRegion zone = CuboidRegion.deserialize(
+				getMap(getMap(config, "sumo"), "zone")
+			);
+			sumo.setZone(zone);
 		}
 		
 		if(config.contains("lanes")) {
 			lanes.clear();
-			Map<String, Object> lanesdata = getMap(config, "lanes");
-    		
-    		for(Entry<String, Object> lanedata : lanesdata.entrySet()) {  
-    			Lane l = Lane.deserialize(asMap(lanedata.getValue()));
-    			if(l == null) continue;
-    			l.setName(lanedata.getKey());
-    			l.setGame(this);
-    			pmgr.registerEvents(l, plugin);
-    			lanes.add(l);
-    		}
+			Map<String, Map<String, Object>> lanesdata = ConfigUtil.<Map<String, Object>>getMapT(config, "lanes");
+			List<Lane> lanes = ConfigUtil.deserialize(lanesdata, Lane.class);
+			
+			for(Lane l : lanes) {
+				l.setGame(this);
+				pmgr.registerEvents(l, plugin);
+			}
 		}
 	}
 	
 	public void saveMapConfig() {
 		if( sumo.getZone() != null) {
-    		Map<String, Object> sumoconfig = new HashMap<>();
-    		sumoconfig.put("zone", sumo.getZone().serialize());
-    		config.set("sumo", sumoconfig);
+			Map<String, Object> sumoconfig = new HashMap<>();
+			sumoconfig.put("zone", sumo.getZone().serialize());
+			config.set("sumo", sumoconfig);
 		}
 
 		Map<String, Object> lanesconfig = new HashMap<>();
@@ -100,11 +99,11 @@ public class Game {
 		
 		
 		try {
-	        config.save(configFile);
-        } catch (IOException e) {
-	        // TODO Auto-generated catch block
-	        e.printStackTrace();
-        }
+			config.save(configFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public World getWorld() { return world; }
@@ -133,20 +132,20 @@ public class Game {
 	public void onSumoKnockout(Player loser) {
 		for(Player p : world.getPlayers())
 			p.sendMessage(loser.getName() + " was knocked out!");
-    }
+	}
 	
 	public Team AddTeam(String teamName) {
-	    Team t = new Team(teamName, this);
-	    teams.add(t);
-	    return t;
-    }
+		Team t = new Team(teamName, this);
+		teams.add(t);
+		return t;
+	}
 	public void start() {
 		for(Team t : teams) {
-    		for(Player p : t.getPlayers()) {
-    			//p.setHealth(20);
-    			//p.setFoodLevel(20);
-    			p.sendMessage("Entering team chat mode");
-    		}
+			for(Player p : t.getPlayers()) {
+				//p.setHealth(20);
+				//p.setFoodLevel(20);
+				p.sendMessage("Entering team chat mode");
+			}
 		}
 		state = State.RUNNING;
 	}
@@ -165,22 +164,21 @@ public class Game {
 	}
 	
 	public Team getTeam(String teamName) {
-	    for(Team t : teams)
-	    	if(t.getName().equals(teamName))
-	    		return t;
-	    return null;
-    }
+		for(Team t : teams)
+			if(t.getName().equals(teamName))
+				return t;
+		return null;
+	}
 	
 	public Lane getLane(String laneName) {
-	    for(Lane l : lanes)
-	    	if(l.getName().equals(laneName))
-	    		return l;
-	    return null;
-    }
+		for(Lane l : lanes)
+			if(l.getName().equals(laneName))
+				return l;
+		return null;
+	}
 	
 	public List<Team> getTeams() { return teams; }
 	public List<Lane> getLanes() { return lanes; }
 	public SumoCourt getSumo() { return sumo; }
 	public RFWManager getPlugin() { return plugin; }
-
 }

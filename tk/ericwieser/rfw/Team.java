@@ -6,15 +6,18 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class Team {
+import tk.ericwieser.util.Nameable;
+
+public class Team implements Nameable {
 	public Game game;
 	private ChatColor color = ChatColor.YELLOW;
 	private String name;
+
 	public Team(String name, Game g) {
-	    super();
-	    this.name = name;
-	    this.game = g;
-    }
+		super();
+		this.name = name;
+		this.game = g;
+	}
 
 	private List<Player> players = new ArrayList<Player>();
 	
@@ -29,22 +32,28 @@ public class Team {
 	}
 
 	public void setColor(ChatColor color) {
-    	this.color = color;
-    }
+		this.color = color;
+	}
+
+	private ChatColor fromString(String color) {
+		color = color.toUpperCase();
+		try {
+			ChatColor c = ChatColor.valueOf(color);
+			if(c.isColor())
+				return c;
+		} catch(IllegalArgumentException e) { }
+		return null;
+	}
 	
 	public void setColor(String color) {
-		color = color.toLowerCase();
-		if("red"    .equals(color)) this.color = ChatColor.RED;
-		if("green"  .equals(color)) this.color = ChatColor.GREEN;
-		if("blue"   .equals(color)) this.color = ChatColor.BLUE;
-		if("aqua"   .equals(color)) this.color = ChatColor.AQUA;
-		if("magenta".equals(color)) this.color = ChatColor.LIGHT_PURPLE;
-		if("purple" .equals(color)) this.color = ChatColor.LIGHT_PURPLE;
-    }
+		ChatColor c = fromString(color);
+		if(c != null)
+			this.color = c;
+	}
 
 	public void setName(String name) {
 		this.name = name;
-    }
+	}
 
 	public List<Player> getPlayers() { return players; }
 	public String getName() { return name; }
