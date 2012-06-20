@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,24 +12,22 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import tk.ericwieser.util.CuboidRegion;
 
-import com.sk89q.worldedit.bukkit.selections.Selection;
-
 public class SumoCourt implements Listener {
 	private CuboidRegion zone;
-	private Game      game;
+	private Game  game;
 	private List<Player> players;
-
+	
 	public SumoCourt(Game game) {
 		this.game = game;
 	}
-
+	
 	public void setZone(CuboidRegion zone) {
 		this.zone = zone;
 		this.zone.setWorld(game.getWorld());
 	}
 	public CuboidRegion getZone() {
-	    return zone;
-    }
+		return zone;
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void playerMoved(PlayerMoveEvent e) {
@@ -58,7 +55,7 @@ public class SumoCourt implements Listener {
 	public void start(List<Player> players) {
 		this.players = players;
 	}
-
+	
 	public List<Player> getPlayers() {
 		List<Player> inArena = new ArrayList<Player>();
 		if(zone == null) return inArena;
@@ -72,5 +69,4 @@ public class SumoCourt implements Listener {
 		}
 		return inArena;
 	}
-
 }

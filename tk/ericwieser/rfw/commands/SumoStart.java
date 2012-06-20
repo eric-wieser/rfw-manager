@@ -1,6 +1,5 @@
 package tk.ericwieser.rfw.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -11,12 +10,6 @@ import org.bukkit.entity.Player;
 
 import tk.ericwieser.rfw.Game;
 import tk.ericwieser.rfw.RFWManager;
-import tk.ericwieser.rfw.SumoCourt;
-import tk.ericwieser.rfw.Team;
-
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
-import com.sk89q.worldedit.bukkit.selections.Selection;
-import com.sk89q.worldedit.regions.CuboidRegion;
 
 public class SumoStart implements CommandExecutor {
 	RFWManager plugin;
@@ -75,5 +68,4 @@ public class SumoStart implements CommandExecutor {
 		
 		return false;
 	}
-
 }
