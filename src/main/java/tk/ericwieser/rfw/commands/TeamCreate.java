@@ -1,5 +1,6 @@
 package tk.ericwieser.rfw.commands;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,9 +20,9 @@ public class TeamCreate implements CommandExecutor {
 	@Override
     public boolean onCommand(CommandSender sender, Command command,
             String label, String[] args) {
-		if(args.length != 1) return false;
+		if(args.length < 1) return false;
 		
-		String teamName = args[0];
+		String teamName = StringUtils.join(args, " ", 1, args.length);
 		
 		if(!(sender instanceof Player)) return false;
 		

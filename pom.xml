@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>RFWManager</groupId>
 	<artifactId>RFWManager</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>RFW Manager</name>
 	<description>A Bukkit plugin for managing RFW games</description>
 
@@ -39,16 +39,24 @@
 			<artifactId>bukkit</artifactId>
 			<version>1.2.5-R1.2</version>
 		</dependency>
-    <dependency>
-      <groupId>com.sk89q</groupId>
-      <artifactId>worldedit</artifactId>
-      <version>5.3</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.spout</groupId>
-          <artifactId>spoutapi</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
+		<dependency>
+			<groupId>com.sk89q</groupId>
+			<artifactId>worldedit</artifactId>
+			<version>5.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.spout</groupId>
+					<artifactId>spoutapi</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
 </project>

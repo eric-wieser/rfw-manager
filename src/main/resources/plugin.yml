@@ -1,8 +1,8 @@
-name: RFW Manager
+name: ${pom.name}
 author: Eric Wieser
 
 main: tk.ericwieser.rfw.RFWManager
-version: 0.0.1
+version: ${pom.version}
 
 depend: [WorldEdit]
 

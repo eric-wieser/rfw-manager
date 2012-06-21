@@ -9,5 +9,5 @@ public abstract class GameComponent {
 		return game.getPlugin();
 	}
 	
-	public GameComponent(Game game) {setGame(game); }
+	public GameComponent(Game game) { this.game = game; }
 }
