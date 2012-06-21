@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>RFWManager</groupId>
+	<artifactId>RFWManager</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>RFW Manager</name>
+	<description>A Bukkit plugin for managing RFW games</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<bukkit.version>1.2.5-R1.2</bukkit.version>
+	</properties>
+
+	<url>https://github.com/eric-wieser/rfw-manager</url>
+	<scm>
+		<url>https://github.com/eric-wieser/rfw-manager</url>
+		<connection>scm:git:git@github.com:eric-wieser/rfw-manager.git</connection>
+		<developerConnection>scm:git:git@github.com:eric-wieser/rfw-manager.git</developerConnection>
+	</scm>
+	<repositories>
+		<repository>
+			<id>bukkit-repo</id>
+			<url>http://repo.bukkit.org/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>sk89q-repo</id>
+			<url>http://maven.sk89q.com/repo/</url>
+		</repository>
+	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.2.5-R1.2</version>
+		</dependency>
+    <dependency>
+      <groupId>com.sk89q</groupId>
+      <artifactId>worldedit</artifactId>
+      <version>5.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.spout</groupId>
+          <artifactId>spoutapi</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+	</dependencies>
+</project>
