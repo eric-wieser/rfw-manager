@@ -1,5 +1,37 @@
-Sample config file:
+Proposed commands:
+==================
+```
+/setup
+  lane
+    add [lane]
+    clear [lane]
+    info
+  sumo
+  wool
+    clear
+    
+/team
+  create <name> <color>
+    in: lobby
+  modify <name> <color>
+    in: lobby
+  join <name>
+    in: lobby
+  list
+    in: lobby - show all teams
+    in: match - show match teams
 
+/match
+  new <map>
+  addteam <team>
+  sumo
+  assign [team] <lane>
+  start
+  end
+```
+
+Sample config file
+==================
 ```yaml
 name: Direct Fire
 author: Vechz
